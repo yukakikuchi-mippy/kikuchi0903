@@ -10,7 +10,7 @@
         />
       </v-col>
 
-      <v-col class="mb-4">
+      <v-col class="mb-5">
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Vuetify
         </h1>
