@@ -13,14 +13,8 @@
 </template>
 
 <script>
-import VChart from "vue-echarts";
-import "echarts/lib/chart/line";
-import "echarts/lib/component/tooltip";
-import "echarts/lib/component/grid";
-
 export default {
   name: "SentimentTrendChart",
-  components: { VChart },
   props: {
     trendData: {
       type: Object,
@@ -32,8 +26,17 @@ export default {
     chartOptions() {
       return {
         tooltip: { trigger: "axis" },
-        xAxis: { type: "category", data: this.trendData.labels, axisLabel: { fontSize: 14 } },
-        yAxis: { type: "value", min: -1, max: 1, axisLabel: { fontSize: 14 } },
+        xAxis: {
+          type: "category",
+          data: this.trendData.labels,
+          axisLabel: { fontSize: 14 }
+        },
+        yAxis: {
+          type: "value",
+          min: -1,
+          max: 1,
+          axisLabel: { fontSize: 14 }
+        },
         series: [
           {
             type: "line",

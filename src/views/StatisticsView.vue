@@ -6,6 +6,7 @@
       </v-col>
     </v-row>
 
+    <!-- 感情内訳 / 日記件数 -->
     <v-row>
       <v-col cols="12" md="6">
         <SentimentStatsChart :stats="sentimentStats" />
@@ -16,18 +17,21 @@
       </v-col>
     </v-row>
 
+    <!-- 感情スコア平均推移 -->
     <v-row>
       <v-col cols="12">
         <SentimentTrendChart :trendData="sentimentTrend" />
       </v-col>
     </v-row>
 
+    <!-- ローディング -->
     <v-row v-if="loading">
       <v-col>
         <v-progress-circular indeterminate color="primary" />
       </v-col>
     </v-row>
 
+    <!-- エラー表示 -->
     <v-row v-if="error">
       <v-col>
         <v-alert type="error" outlined>{{ error }}</v-alert>
@@ -66,7 +70,7 @@ export default {
       );
       this.sentimentStats = res1.data;
 
-      // 日記件数
+      // 日記件数（日単位）
       const res2 = await axios.get(
         "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/diaries/count",
         { params: { userId, period: "day" } }
@@ -79,13 +83,12 @@ export default {
         { params: { userId } }
       );
 
-      // API が { labels: [...], averages: [...] } の場合
       const data = res3.data;
       this.sentimentTrend.labels = data.labels.map(d => {
         const dt = new Date(d);
         return `${dt.getMonth() + 1}/${dt.getDate()}`;
       });
-      this.sentimentTrend.scores = data.averages.map(v => v !== null ? v : null);
+      this.sentimentTrend.scores = data.averages.map(v => (v !== null ? v : null));
 
     } catch (err) {
       console.error(err);

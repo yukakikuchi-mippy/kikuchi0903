@@ -32,7 +32,7 @@ export default {
   name: "DiaryCountChart",
   components: { VChart },
   props: {
-    diariesCount: { type: Object, required: true } // 初期値は親から渡す
+    diariesCount: { type: Object, required: true, default: () => ({ labels: [], counts: [] }) }
   },
   data() {
     return {
@@ -83,8 +83,7 @@ export default {
         });
       } else if (this.period === "week") {
         return labels.map(w => {
-          // API から "YYYY-WW" 形式で返ってくる場合、週番号だけを使う
-          const weekNum = w.split("-W")[1] || w; // "-W" がなければそのまま
+          const weekNum = w.split("-W")[1] || w;
           return `${weekNum}W`;
         });
       } else if (this.period === "month") {

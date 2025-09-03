@@ -1,6 +1,6 @@
 <template>
   <v-btn text color="white" to="/diary" tag="router-link" :small="small">
-    日記投稿
+    投稿
   </v-btn>
 </template>
 
