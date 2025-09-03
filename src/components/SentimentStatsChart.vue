@@ -8,8 +8,6 @@
 </template>
 
 <script>
-// Vue 2 用の vue-echarts v4 を想定
-// main.js でグローバル登録済みなら import も不要
 export default {
   name: "SentimentStatsChart",
   props: {
@@ -21,16 +19,24 @@ export default {
   },
   computed: {
     chartOptions() {
+      const isDark = this.$vuetify.theme.dark;
+      const textColor = isDark ? "#ffffff" : "#000000";
+      const splitLineColor = isDark ? "#444444" : "#cccccc";
+
       return {
-        tooltip: {},
+        tooltip: { textStyle: { color: textColor } },
         xAxis: {
           type: "category",
           data: ["😊", "😐", "😢"],
-          axisLabel: { fontSize: 20 }
+          axisLabel: { fontSize: 20, color: textColor },
+          axisLine: { lineStyle: { color: textColor } },
+          splitLine: { lineStyle: { color: splitLineColor } }
         },
         yAxis: {
           type: "value",
-          axisLabel: { fontSize: 16 }
+          axisLabel: { fontSize: 16, color: textColor },
+          axisLine: { lineStyle: { color: textColor } },
+          splitLine: { lineStyle: { color: splitLineColor } }
         },
         series: [
           {

@@ -87,13 +87,14 @@ export default {
         // 成功
         this.message = response.data?.Message || "名前を変更しました。";
 
-        // Vuex 側の名前も更新
         this.$store.commit("setSession", {
-          sessionId: this.$store.state.sessionId,
-          userId: userId,
-          userName: this.newName,
-          expiresAt: this.$store.state.expiresAt,
-        });
+                sessionId: this.$store.state.sessionId,
+                userId: userId,
+                userName: this.newName,
+                expiresAt: this.$store.state.expiresAt,
+                headerColor: this.$store.state.headerColor,
+                backgroundColor: this.$store.state.backgroundColor,
+            });
 
         this.successDialog = true;
         this.errorMessage = "";

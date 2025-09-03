@@ -17,6 +17,13 @@ Vue.component('v-chart', VChart);
 
 Vue.config.productionTip = false;
 
+// localStorageからセッション復元追加
+const savedSession = JSON.parse(localStorage.getItem('session'));
+if (savedSession && savedSession.sessionId) {
+  store.commit('setSession', savedSession); // Vuex に反映
+}
+
+
 new Vue({
   router,
   store,

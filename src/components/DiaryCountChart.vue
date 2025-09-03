@@ -47,14 +47,25 @@ export default {
   },
   computed: {
     chartOptions() {
+      const isDark = this.$vuetify.theme.dark;
+      const textColor = isDark ? "#ffffff" : "#000000";
+      const splitLineColor = isDark ? "#444444" : "#cccccc";
+
       return {
-        tooltip: {},
+        tooltip: { textStyle: { color: textColor } },
         xAxis: {
           type: "category",
           data: this.formatLabels(this.localDiariesCount.labels),
-          axisLabel: { fontSize: 14 }
+          axisLabel: { fontSize: 14, color: textColor },
+          axisLine: { lineStyle: { color: textColor } },
+          splitLine: { lineStyle: { color: splitLineColor } }
         },
-        yAxis: { type: "value", axisLabel: { fontSize: 14 } },
+        yAxis: {
+          type: "value",
+          axisLabel: { fontSize: 14, color: textColor },
+          axisLine: { lineStyle: { color: textColor } },
+          splitLine: { lineStyle: { color: splitLineColor } }
+        },
         series: [
           {
             type: "bar",

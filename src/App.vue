@@ -2,19 +2,12 @@
   <v-app>
     <!-- ヘッダー -->
     <v-app-bar app :color="$store.getters.currentUser.headerColor || 'pink lighten-2'" dark>
-      <!-- タイトル -->
-      <v-toolbar-title class="app-title">
-        MyDiary
-      </v-toolbar-title>
+      <v-toolbar-title class="app-title">MyDiary</v-toolbar-title>
+      <v-spacer />
 
-      <v-spacer></v-spacer>
-
-      <!-- ログイン時のみ表示 -->
-      <div v-if="$store.getters.isLoggedIn" class="header-right">
-        <!-- ユーザー名 -->
+      <!-- 大画面用 -->
+      <div v-if="$store.getters.isLoggedIn && !isMobile" class="header-right">
         <span class="username">{{ $store.getters.currentUser.name }} さん</span>
-
-        <!-- ボタン -->
         <DiaryButton class="responsive-btn" />
         <DiarylistButton class="responsive-btn" />
         <StatisticsButton class="responsive-btn" />
@@ -28,16 +21,16 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="$router.push({ name: 'ChangeName' })">
+            <v-list-item :to="{ name: 'ChangeName' }">
               <v-list-item-title>名前の変更</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="$router.push({ name: 'ChangePassword' })">
+            <v-list-item :to="{ name: 'ChangePassword' }">
               <v-list-item-title>パスワードの変更</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="$router.push({ name: 'ChangeHeaderColor' })">
+            <v-list-item :to="{ name: 'ChangeHeaderColor' }">
               <v-list-item-title>ヘッダー色変更</v-list-item-title>
             </v-list-item>
-            <v-list-item @click="$router.push({ name: 'ChangeBackgroundColor' })">
+            <v-list-item :to="{ name: 'ChangeBackgroundColor' }">
               <v-list-item-title>背景色変更</v-list-item-title>
             </v-list-item>
             <v-list-item @click="switchLightDarkMode">
@@ -46,16 +39,57 @@
           </v-list>
         </v-menu>
       </div>
+
+      <!-- モバイル用 -->
+      <div v-else-if="$store.getters.isLoggedIn && isMobile" class="mobile-right">
+        <span class="username">{{ $store.getters.currentUser.name }} さん</span>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      </div>
     </v-app-bar>
 
+    <!-- モバイルドロワー -->
+    <v-navigation-drawer v-model="drawer" app temporary right>
+      <v-list dense>
+        <v-list-item :to="{ name: 'diary' }" @click="closeDrawer">
+          <v-list-item-title>日記投稿</v-list-item-title>
+        </v-list-item>
+        <v-list-item :to="{ name: 'diarylist' }" @click="closeDrawer">
+          <v-list-item-title>日記一覧</v-list-item-title>
+        </v-list-item>
+        <v-list-item :to="{ name: 'Statistics' }" @click="closeDrawer">
+          <v-list-item-title>統計</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout">
+          <v-list-item-title>ログアウト</v-list-item-title>
+        </v-list-item>
+
+        <v-list-group prepend-icon="mdi-cog" no-action>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>設定</v-list-item-title>
+            </v-list-item-content>
+          </template>
+          <v-list-item :to="{ name: 'ChangeName' }" @click="closeDrawer">
+            <v-list-item-title>名前の変更</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'ChangePassword' }" @click="closeDrawer">
+            <v-list-item-title>パスワードの変更</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'ChangeHeaderColor' }" @click="closeDrawer">
+            <v-list-item-title>ヘッダー色変更</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'ChangeBackgroundColor' }" @click="closeDrawer">
+            <v-list-item-title>背景色変更</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="switchLightDarkMode">
+            <v-list-item-title>ライト/ダークモード切替</v-list-item-title>
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </v-navigation-drawer>
+
     <!-- コンテンツ -->
-    <v-main
-      :style="{
-        backgroundColor: $vuetify.theme.dark
-          ? '#121212'
-          : ($store.getters.currentUser.backgroundColor || 'white')
-      }"
-    >
+    <v-main :style="{ backgroundColor: $vuetify.theme.dark ? '#121212' : ($store.getters.currentUser.backgroundColor || 'white') }">
       <router-view />
     </v-main>
   </v-app>
@@ -69,17 +103,34 @@ import StatisticsButton from "@/components/StatisticsButton.vue";
 
 export default {
   name: "App",
-  components: {
-    LogoutButton,
-    DiarylistButton,
-    DiaryButton,
-    StatisticsButton
+  components: { LogoutButton, DiarylistButton, DiaryButton, StatisticsButton },
+  data() {
+    return { drawer: false, isMobile: false };
+  },
+  mounted() {
+    this.checkScreen();
+    window.addEventListener("resize", this.checkScreen);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.checkScreen);
   },
   methods: {
+    checkScreen() {
+      this.isMobile = window.innerWidth <= 800;
+    },
     switchLightDarkMode() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-    }
-  }
+      if (this.isMobile) this.drawer = false; // ドロワーを閉じる
+    },
+    logout() {
+      this.$store.dispatch("logout");
+      this.$router.push({ name: "login" });
+      if (this.isMobile) this.drawer = false;
+    },
+    closeDrawer() {
+      if (this.isMobile) this.drawer = false;
+    },
+  },
 };
 </script>
 
@@ -90,41 +141,28 @@ export default {
   gap: 12px;
 }
 
-.username {
-  font-weight: bold;
+.mobile-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto; /* ハンバーガーとユーザー名を右寄せ */
 }
 
-/* タイトル */
-.app-title {
-  font-size: 28px;
-  font-weight: bold;
-}
+.username { font-weight: bold; }
+.app-title { font-size: 28px; font-weight: bold; flex-shrink: 0; }
+.responsive-btn { font-size: 16px; padding: 6px 12px; }
+.responsive-icon { font-size: 24px; }
 
-/* ボタン */
-.responsive-btn {
-  font-size: 16px;
-  padding: 6px 12px;
-}
-
-/* 歯車アイコン */
-.responsive-icon {
-  font-size: 24px;
-}
-
-/* レスポンシブ */
 @media (max-width: 1200px) {
   .app-title { font-size: 24px; }
   .responsive-btn { font-size: 14px; padding: 4px 10px; }
   .responsive-icon { font-size: 22px; }
 }
-
 @media (max-width: 800px) {
   .app-title { font-size: 20px; }
-  .username { display: none; }
   .responsive-btn { font-size: 12px; padding: 2px 6px; }
   .responsive-icon { font-size: 20px; }
 }
-
 @media (max-width: 500px) {
   .app-title { font-size: 18px; }
   .responsive-btn { font-size: 10px; padding: 2px 4px; }

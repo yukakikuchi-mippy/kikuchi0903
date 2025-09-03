@@ -74,11 +74,6 @@ const routes = [
   component: () => import('@/views/StatisticsView.vue')
   }
 
-
-
-
-
-
 ]
 
 const router = new VueRouter({
@@ -86,5 +81,22 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['login', 'signup'];
+  const authRequired = !publicPages.includes(to.name);
+
+  const session = JSON.parse(localStorage.getItem('session') || 'null');
+  const sessionValid = session && session.sessionId && (!session.expiresAt || new Date(session.expiresAt) > new Date());
+
+  // 認証が必要なページでセッション無効ならログインへ
+  if (authRequired && !sessionValid) return next({ name: 'login' });
+
+  // loginページで有効なセッションがあれば diary にリダイレクト
+  if (to.name === 'login' && sessionValid) return next({ name: 'diary' });
+
+  next();
+});
+
 
 export default router

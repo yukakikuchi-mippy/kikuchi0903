@@ -106,6 +106,9 @@ export default {
   backgroundColor: response.data.backgroundColor || "white"
 });
 
+// localStorage にも保存
+localStorage.setItem('session', JSON.stringify(this.$store.state))
+
 // デバッグログ
 console.log("保存したセッションID:", sessionResponse.data.sessionId);
 console.log("Vuex state.sessionId:", this.$store.state.sessionId);
@@ -120,7 +123,8 @@ console.log("Vuex 全体 state:", JSON.stringify(this.$store.state, null, 2));
             
 
             // ✅ 日記ページに遷移
-            this.$router.push("/diary");
+            //this.$router.push("/diary");
+            this.$router.replace("/diary"); 
           } else {
             this.errorMessage = "セッションの生成に失敗しました。";
             this.dialog = true;

@@ -14,43 +14,31 @@ export default {
   },
   methods: {
     async logout() {
-      try {
-        const sessionId = this.$store.state.sessionId; // ✅ 修正済み
+  try {
+    const sessionId = this.$store.state.sessionId;
 
-        if (!sessionId) {
-          alert("セッションが見つかりません。ログインし直してください。");
-          this.$store.dispatch("logout");
-          if (this.$route.path !== "/login") {
-            this.$router.push("/login");
-          }
-          return;
-        }
+    // Vuex と localStorage をクリア
+    this.$store.dispatch('logout');
+    document.cookie = "session_id=; Max-Age=0; path=/;";
 
-        // 🔹 サーバーにログアウトリクエスト
-        const response = await axios.post(
-          "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/Logout?",
-           { SessionId: sessionId } 
-        );
-
-        if (response.status === 200) {
-          // ✅ Vuex のセッション削除
-          this.$store.dispatch("logout");
-
-          // ✅ Cookie 削除
-          document.cookie = "session_id=; Max-Age=0; path=/;";
-
-          // ✅ ログインページに遷移
-          if (this.$route.path !== "/login") {
-            this.$router.push("/login");
-          }
-        } else {
-          alert("ログアウトに失敗しました");
-        }
-      } catch (error) {
-        console.error("ログアウト失敗:", error.response?.data || error.message);
-        alert("ログアウトに失敗しました");
-      }
+    // サーバーに通知（sessionId があれば）
+    if (sessionId) {
+      await axios.post(
+        "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/Logout",
+        { SessionId: sessionId }
+      );
     }
+
+    // ログインページに遷移
+    if (this.$route.name !== 'login') {
+      this.$router.replace({ name: 'login' });
+    }
+  } catch (error) {
+    console.error("ログアウト失敗:", error.response?.data || error.message);
+    alert("ログアウトに失敗しました");
+  }
+}
+
   }
 };
 </script>
