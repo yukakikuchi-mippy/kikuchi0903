@@ -98,46 +98,35 @@ export default {
           if (sessionResponse.status === 200) {
             // ✅ Vuexにセッション保存
             this.$store.commit("setSession", {
-  sessionId: sessionResponse.data.sessionId,
-  userId: this.userid,
-  userName: response.data.userName,
-  expiresAt: sessionResponse.data.expiresAt || null,
-  headerColor: response.data.headerColor || "pink lighten-2",
-  backgroundColor: response.data.backgroundColor || "white"
-});
+              sessionId: sessionResponse.data.sessionId,
+              userId: this.userid,
+              userName: response.data.userName,
+              expiresAt: sessionResponse.data.expiresAt || null,
+              headerColor: response.data.headerColor || "pink lighten-2",
+              backgroundColor: response.data.backgroundColor || "white"
+            });
 
-// localStorage にも保存
-localStorage.setItem('session', JSON.stringify(this.$store.state))
-
-// デバッグログ
-console.log("保存したセッションID:", sessionResponse.data.sessionId);
-console.log("Vuex state.sessionId:", this.$store.state.sessionId);
-console.log("Vuex state.userId:", this.$store.state.userId);
-console.log("Vuex 全体 state:", JSON.stringify(this.$store.state, null, 2));
+            // localStorage にも保存
+            localStorage.setItem("session", JSON.stringify(this.$store.state));
 
             // ✅ Cookieにも保存（サーバー確認用）
             document.cookie = `session_id=${encodeURIComponent(
               sessionResponse.data.sessionId
             )}; path=/; secure; samesite=strict`;
 
-            
-
             // ✅ 日記ページに遷移
-            //this.$router.push("/diary");
-            this.$router.replace("/diary"); 
+            this.$router.replace("/diary");
           } else {
             this.errorMessage = "セッションの生成に失敗しました。";
             this.dialog = true;
           }
         } else {
-          this.errorMessage =
-            response.data?.Message || "ログインに失敗しました。";
+          this.errorMessage = "ユーザーIDまたはパスワードが正しくありません。";
           this.dialog = true;
         }
       } catch (err) {
         console.error("ログインエラー:", err);
-        this.errorMessage =
-          "ログインエラー：" + (err.response?.data || err.message);
+        this.errorMessage = "ユーザーIDまたはパスワードが正しくありません。";
         this.dialog = true;
       }
     },

@@ -63,12 +63,16 @@
           <v-list-item-title>ログアウト</v-list-item-title>
         </v-list-item>
 
-        <v-list-group prepend-icon="mdi-cog" no-action>
+        <v-list-group
+          :prepend-icon="!isMobile ? 'mdi-cog' : ''"
+          no-action
+        >
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>設定</v-list-item-title>
             </v-list-item-content>
           </template>
+
           <v-list-item :to="{ name: 'ChangeName' }" @click="closeDrawer">
             <v-list-item-title>名前の変更</v-list-item-title>
           </v-list-item>

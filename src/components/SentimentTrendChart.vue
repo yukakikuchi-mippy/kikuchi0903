@@ -1,6 +1,6 @@
 <template>
   <v-card outlined class="pa-4">
-    <v-card-title>感情スコア平均推移（直近2週間）</v-card-title>
+    <v-card-title>感情スコア平均（直近2週間）</v-card-title>
     <v-card-text>
       <v-chart
         v-if="trendData.labels.length"
