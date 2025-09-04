@@ -7,80 +7,81 @@
     </v-row>
 
     <v-row class="mb-4" align="center" dense wrap>
-  <!-- 日付 -->
-  <v-col cols="6" sm="3" md="2">
-    <v-menu
-      v-model="dateMenu"
-      :close-on-content-click="false"
-      transition="scale-transition"
-      offset-y
-      min-width="auto"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-text-field
-          v-bind="attrs"
-          v-on="on"
-          label="日付"
-          readonly
-          v-model="filterDateText"
+      <!-- 日付 -->
+      <v-col cols="6" sm="3" md="2">
+        <v-menu
+          v-model="dateMenu"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-text-field
+              v-bind="attrs"
+              v-on="on"
+              label="日付"
+              readonly
+              v-model="filterDateText"
+              dense
+              clearable
+            ></v-text-field>
+          </template>
+          <v-card>
+            <v-date-picker v-model="filterDate" @input="dateMenu = false"></v-date-picker>
+            <v-card-actions>
+              <v-btn text dense @click="filterDate = null; dateMenu = false">クリア</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </v-col>
+
+      <!-- 日付条件 -->
+      <v-col cols="6" sm="2" md="2">
+        <v-select
+          v-model="filterDateType"
+          :items="dateTypeOptions"
+          label="条件"
           dense
+        ></v-select>
+      </v-col>
+
+      <!-- 感情 -->
+      <v-col cols="6" sm="2" md="2">
+        <v-select
+          v-model="filterSentiment"
+          :items="sentimentOptions"
+          label="感情"
           clearable
-        ></v-text-field>
-      </template>
-      <v-card>
-        <v-date-picker v-model="filterDate" @input="dateMenu = false"></v-date-picker>
-        <v-card-actions>
-          <v-btn text dense @click="filterDate = null; dateMenu = false">クリア</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-menu>
-  </v-col>
+          dense
+        ></v-select>
+      </v-col>
 
-  <!-- 日付条件 -->
-  <v-col cols="6" sm="2" md="2">
-    <v-select
-      v-model="filterDateType"
-      :items="dateTypeOptions"
-      label="条件"
-      dense
-    ></v-select>
-  </v-col>
+      <!-- お気に入り -->
+      <v-col cols="6" sm="2" md="2">
+        <v-checkbox
+          v-model="showFavoritesOnly"
+          label="お気に入りのみ"
+          dense
+          hide-details
+        ></v-checkbox>
+      </v-col>
 
-  <!-- 感情 -->
-  <v-col cols="6" sm="2" md="2">
-    <v-select
-      v-model="filterSentiment"
-      :items="sentimentOptions"
-      label="感情"
-      clearable
-      dense
-    ></v-select>
-  </v-col>
-
-  <!-- お気に入り -->
-  <v-col cols="6" sm="2" md="2">
-    <v-checkbox
-      v-model="showFavoritesOnly"
-      label="お気に入りのみ"
-      dense
-      hide-details
-    ></v-checkbox>
-  </v-col>
-
-  <!-- クリアボタン -->
-  <v-col cols="6" sm="2" md="2">
-    <v-btn text small color="primary" @click="clearAllFilters" dense>クリア</v-btn>
-  </v-col>
-</v-row>
+      <!-- クリアボタン -->
+      <v-col cols="6" sm="2" md="2">
+        <v-btn text small color="primary" @click="clearAllFilters" dense>クリア</v-btn>
+      </v-col>
+    </v-row>
 
     <!-- データテーブル -->
     <v-row>
       <v-col>
         <v-data-table
+          dense
           :headers="headers"
           :items="filteredDiaries"
           :loading="loading"
-          class="elevation-1"
+          class="elevation-1 mobile-table"
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
         >
@@ -90,12 +91,7 @@
               <td>
                 <v-tooltip bottom open-delay="800">
                   <template v-slot:activator="{ on, attrs }">
-                    <span
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="goToDetail(item)"
-                      style="cursor: pointer;"
-                    >
+                    <span v-bind="attrs" v-on="on" @click="goToDetail(item)" class="table-text">
                       {{ formatDate(item.created_at_jst) }}
                     </span>
                   </template>
@@ -106,12 +102,7 @@
               <td>
                 <v-tooltip bottom open-delay="800">
                   <template v-slot:activator="{ on, attrs }">
-                    <span
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="goToDetail(item)"
-                      style="cursor: pointer;"
-                    >
+                    <span v-bind="attrs" v-on="on" @click="goToDetail(item)" class="table-text">
                       {{ truncateText(item.text, 20) }}
                     </span>
                   </template>
@@ -122,12 +113,7 @@
               <td>
                 <v-tooltip bottom open-delay="800">
                   <template v-slot:activator="{ on, attrs }">
-                    <span
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="goToDetail(item)"
-                      style="cursor: pointer;"
-                    >
+                    <span v-bind="attrs" v-on="on" @click="goToDetail(item)" class="table-text">
                       {{ truncateText(item.ai_text, 20) }}
                     </span>
                   </template>
@@ -138,12 +124,7 @@
               <td>
                 <v-tooltip bottom open-delay="800">
                   <template v-slot:activator="{ on, attrs }">
-                    <span
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="goToDetail(item)"
-                      style="cursor: pointer;"
-                    >
+                    <span v-bind="attrs" v-on="on" @click="goToDetail(item)" class="table-text">
                       <SentimentDisplay :score="item.sentiment" />
                     </span>
                   </template>
@@ -152,29 +133,17 @@
               </td>
               <!-- 操作 -->
               <td>
-                <FavoriteButton
-                  :diaryId="item.diary_id"
-                  :initialFavorite="item.is_favorite"
-                  @update="val => item.is_favorite = val"
-                  @click.stop
-                />
-                <v-tooltip bottom :open-delay="500">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      icon
-                      color="error"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click.stop="confirmDelete(item.diary_id)"
-                    >
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>削除</span>
-                </v-tooltip>
-
-
+                <div class="actions-column">
+                  <FavoriteButton
+                    :diaryId="item.diary_id"
+                    :initialFavorite="item.is_favorite"
+                    @update="val => item.is_favorite = val"
+                    @click.stop
+                  />
+                  <v-btn small icon color="error" @click.stop="confirmDelete(item.diary_id)">
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </div>
               </td>
             </tr>
           </template>
@@ -336,3 +305,50 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* テーブル全体の横スクロール */
+.mobile-table {
+  overflow-x: auto;
+  display: block;
+}
+
+/* 日記本文・AIコメント */
+.table-text {
+  display: inline-block;
+  max-width: none;
+  white-space: nowrap; /* PCでは1行 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 4px 0; /* 少し縦スペース */
+}
+
+/* 操作ボタン横並び */
+.actions-column {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  min-height: 48px; /* 行高さを確保 */
+}
+
+/* 画面幅が狭い場合（スマホなど） */
+@media (max-width: 800px) {
+  .table-text {
+    white-space: normal; /* 折り返し */
+    max-width: 140px;
+    word-break: break-word;
+  }
+
+  .actions-column {
+    flex-direction: column; /* 縦並び */
+    align-items: center;
+  }
+}
+
+/* セルの最低高さを確保して縦幅を広く */
+.v-data-table .v-data-table__wrapper tr td {
+  min-height: 48px;
+  vertical-align: middle;
+}
+</style>
