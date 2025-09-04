@@ -6,71 +6,72 @@
       </v-col>
     </v-row>
 
-    <v-row class="mb-4" align="center" dense>
-      <!-- 日付フィルター -->
-      <v-col cols="12" sm="6" md="3">
-        <v-menu
-          v-model="dateMenu"
-          :close-on-content-click="false"
-          transition="scale-transition"
-          offset-y
-          min-width="auto"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-bind="attrs"
-              v-on="on"
-              label="日付で絞り込み"
-              readonly
-              v-model="filterDateText"
-              clearable
-            ></v-text-field>
-          </template>
-          <v-card>
-            <v-date-picker
-              v-model="filterDate"
-              @input="dateMenu = false"
-            ></v-date-picker>
-            <v-card-actions>
-              <v-btn text @click="filterDate = null; dateMenu = false">クリア</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-menu>
-      </v-col>
-
-      <!-- 日付条件（その日 / 以前 / 以降） -->
-      <v-col cols="12" sm="6" md="2">
-        <v-select
-          v-model="filterDateType"
-          :items="dateTypeOptions"
-          label="日付条件"
-        ></v-select>
-      </v-col>
-
-      <!-- 感情スコア絵文字フィルター（3番目） -->
-      <v-col cols="12" sm="6" md="2">
-        <v-select
-          v-model="filterSentiment"
-          :items="sentimentOptions"
-          label="感情で絞り込み"
-          clearable
-        ></v-select>
-      </v-col> 
-
-      <!-- お気に入りフィルター（4番目） -->
-      <v-col cols="12" sm="6" md="2">
-        <v-checkbox
-          v-model="showFavoritesOnly"
-          label="お気に入りのみ表示"
+    <v-row class="mb-4" align="center" dense wrap>
+  <!-- 日付 -->
+  <v-col cols="6" sm="3" md="2">
+    <v-menu
+      v-model="dateMenu"
+      :close-on-content-click="false"
+      transition="scale-transition"
+      offset-y
+      min-width="auto"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-text-field
+          v-bind="attrs"
+          v-on="on"
+          label="日付"
+          readonly
+          v-model="filterDateText"
           dense
-          hide-details
-        ></v-checkbox>
-      </v-col>
+          clearable
+        ></v-text-field>
+      </template>
+      <v-card>
+        <v-date-picker v-model="filterDate" @input="dateMenu = false"></v-date-picker>
+        <v-card-actions>
+          <v-btn text dense @click="filterDate = null; dateMenu = false">クリア</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-menu>
+  </v-col>
 
-      <v-btn text small color="primary" class="ml-2" @click="clearAllFilters">
-        クリア
-      </v-btn>
-    </v-row>
+  <!-- 日付条件 -->
+  <v-col cols="6" sm="2" md="2">
+    <v-select
+      v-model="filterDateType"
+      :items="dateTypeOptions"
+      label="条件"
+      dense
+    ></v-select>
+  </v-col>
+
+  <!-- 感情 -->
+  <v-col cols="6" sm="2" md="2">
+    <v-select
+      v-model="filterSentiment"
+      :items="sentimentOptions"
+      label="感情"
+      clearable
+      dense
+    ></v-select>
+  </v-col>
+
+  <!-- お気に入り -->
+  <v-col cols="6" sm="2" md="2">
+    <v-checkbox
+      v-model="showFavoritesOnly"
+      label="お気に入りのみ"
+      dense
+      hide-details
+    ></v-checkbox>
+  </v-col>
+
+  <!-- クリアボタン -->
+  <v-col cols="6" sm="2" md="2">
+    <v-btn text small color="primary" @click="clearAllFilters" dense>クリア</v-btn>
+  </v-col>
+</v-row>
 
     <!-- データテーブル -->
     <v-row>

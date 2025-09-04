@@ -114,6 +114,12 @@ export default {
   mounted() {
     this.checkScreen();
     window.addEventListener("resize", this.checkScreen);
+
+    // ページ読み込み時に localStorage からダークモード状態を復元
+    const darkMode = localStorage.getItem("darkMode");
+    if (darkMode !== null) {
+      this.$vuetify.theme.dark = darkMode === "true";
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.checkScreen);
@@ -124,6 +130,8 @@ export default {
     },
     switchLightDarkMode() {
       this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+      // ダークモード状態を localStorage に保存
+      localStorage.setItem("darkMode", this.$vuetify.theme.dark);
       if (this.isMobile) this.drawer = false; // ドロワーを閉じる
     },
     logout() {
