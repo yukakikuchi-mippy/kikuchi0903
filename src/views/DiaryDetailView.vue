@@ -41,7 +41,9 @@
       alignItems: 'center',
       justifyContent: 'center',
       color: 'white',
-      fontSize: '12px'
+      fontSize: '12px',
+      borderTopRightRadius: isLast('positive') ? '10px' : '0',
+      borderBottomRightRadius: isLast('positive') ? '10px' : '0'
     }"
   >
     {{ (diary.positive_score * 100).toFixed(0) }}%
@@ -57,7 +59,9 @@
       alignItems: 'center',
       justifyContent: 'center',
       color: 'white',
-      fontSize: '12px'
+      fontSize: '12px',
+      borderTopRightRadius: isLast('neutral') ? '10px' : '0',
+      borderBottomRightRadius: isLast('neutral') ? '10px' : '0'
     }"
   >
     {{ (diary.neutral_score * 100).toFixed(0) }}%
@@ -73,7 +77,9 @@
       alignItems: 'center',
       justifyContent: 'center',
       color: 'white',
-      fontSize: '12px'
+      fontSize: '12px',
+      borderTopRightRadius: isLast('negative') ? '10px' : '0',
+      borderBottomRightRadius: isLast('negative') ? '10px' : '0'
     }"
   >
     {{ (diary.negative_score * 100).toFixed(0) }}%
@@ -139,7 +145,14 @@ export default {
             minute: "numeric",
           });
     },
-    
+     isLast(type) {
+      const active = [];
+      if (this.diary?.positive_score > 0) active.push('positive');
+      if (this.diary?.neutral_score > 0) active.push('neutral');
+      if (this.diary?.negative_score > 0) active.push('negative');
+
+      return active[active.length - 1] === type;
+    } 
   },
 };
 </script>

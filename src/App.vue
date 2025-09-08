@@ -2,7 +2,7 @@
   <v-app>
     <!-- ヘッダー -->
     <v-app-bar app :color="$store.getters.currentUser.headerColor || 'pink lighten-2'" dark>
-      <v-toolbar-title class="app-title">MyDiary</v-toolbar-title>
+      <v-toolbar-title class="app-title" style="cursor: pointer;" @click="goToDiary">MyDiary</v-toolbar-title>
       <v-spacer />
 
       <!-- 大画面用 -->
@@ -142,6 +142,13 @@ export default {
     closeDrawer() {
       if (this.isMobile) this.drawer = false;
     },
+    goToDiary() {
+      if (this.$store.getters.isLoggedIn) {
+        if (this.$route.name !== "diary") {  // すでに日記画面なら push しない
+          this.$router.push({ name: "diary" });
+        }
+      }
+    }
   },
 };
 </script>
