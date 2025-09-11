@@ -24,7 +24,7 @@
             <v-list-item :to="{ name: 'ChangeName' }">
               <v-list-item-title>名前の変更</v-list-item-title>
             </v-list-item>
-            <!-- <v-list-item :to="{ name: 'ChangePassword' }">
+            <v-list-item :to="{ name: 'ChangePassword' }">
               <v-list-item-title>パスワードの変更</v-list-item-title>
             </v-list-item>
             <v-list-item :to="{ name: 'ChangeHeaderColor' }">
@@ -32,7 +32,7 @@
             </v-list-item>
             <v-list-item :to="{ name: 'ChangeBackgroundColor' }">
               <v-list-item-title>背景色変更</v-list-item-title>
-            </v-list-item> -->
+            </v-list-item>
             <v-list-item @click="switchLightDarkMode">
               <v-list-item-title>ライト/ダークモード切替</v-list-item-title>
             </v-list-item>
@@ -76,7 +76,7 @@
           <v-list-item :to="{ name: 'ChangeName' }" @click="closeDrawer">
             <v-list-item-title>名前の変更</v-list-item-title>
           </v-list-item>
-          <!-- <v-list-item :to="{ name: 'ChangePassword' }" @click="closeDrawer">
+          <v-list-item :to="{ name: 'ChangePassword' }" @click="closeDrawer">
             <v-list-item-title>パスワードの変更</v-list-item-title>
           </v-list-item>
           <v-list-item :to="{ name: 'ChangeHeaderColor' }" @click="closeDrawer">
@@ -84,7 +84,7 @@
           </v-list-item>
           <v-list-item :to="{ name: 'ChangeBackgroundColor' }" @click="closeDrawer">
             <v-list-item-title>背景色変更</v-list-item-title>
-          </v-list-item> -->
+          </v-list-item>
           <v-list-item @click="switchLightDarkMode">
             <v-list-item-title>ライト/ダークモード切替</v-list-item-title>
           </v-list-item>
@@ -167,10 +167,39 @@ export default {
   margin-left: auto; /* ハンバーガーとユーザー名を右寄せ */
 }
 
-.username { font-weight: bold; }
-.app-title { font-size: 28px; font-weight: bold; flex-shrink: 0; }
+.username { 
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+   }
+
+.app-title { 
+  font-size: 28px; 
+  font-weight: bold; 
+  flex-shrink: 0; 
+   text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+   }
+
 .responsive-btn { font-size: 16px; padding: 6px 12px; }
 .responsive-icon { font-size: 24px; }
+
+::v-deep(.v-icon) {
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+::v-deep(.v-app-bar) {
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1));
+}
+
+::v-deep(.v-app-bar)::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.2); /* 明るいライン */
+}
+
 
 @media (max-width: 1200px) {
   .app-title { font-size: 24px; }

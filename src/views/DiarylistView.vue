@@ -7,60 +7,79 @@
     </v-row>
 
     <!-- フィルター絞り込み -->
+    <v-card class="mb-4 pa-4" outlined>
     <v-row class="mb-4" align="center" dense wrap>
+       <!-- 絞り込みタイトル -->
+  <v-col cols="12">
+    <h3 class="mb-2">絞り込み</h3>
+  </v-col>
+
   <!-- 日付 -->
-  <v-col cols="6" sm="3" md="2">
+  <v-col cols="12" sm="5" md="2">
     <v-menu
       v-model="dateMenu"
       :close-on-content-click="false"
       transition="scale-transition"
       offset-y
-      min-width="auto"
+      max-width="300"
     >
       <template v-slot:activator="{ on, attrs }">
         <v-text-field
           v-bind="attrs"
           v-on="on"
-          label="日付"
+          label="日付を選択"
           readonly
           v-model="filterDateText"
           dense
           clearable
+          prepend-icon="mdi-calendar"
         ></v-text-field>
       </template>
-      <!-- 日付ピッカー -->
+
       <v-card>
-        <v-date-picker v-model="filterDate" @input="dateMenu = false"></v-date-picker>
+        <v-date-picker
+          v-model="filterDate"
+          @input="dateMenu = false"
+          color="primary"
+          show-current
+        ></v-date-picker>
         <v-card-actions>
-          <v-btn text dense @click="filterDate = null; dateMenu = false">クリア</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn text small color="primary" @click="filterDate = null; dateMenu = false">
+            クリア
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-menu>
   </v-col>
 
   <!-- 日付条件 -->
-  <v-col cols="6" sm="2" md="2">
+  <v-col cols="12" sm="3" md="2">
     <v-select
       v-model="filterDateType"
       :items="dateTypeOptions"
-      label="条件"
+      label="日付の範囲"
       dense
+      outlined
+      hide-details
     ></v-select>
   </v-col>
 
   <!-- 感情 -->
-  <v-col cols="6" sm="2" md="2">
+  <v-col cols="12" sm="2" md="2">
     <v-select
       v-model="filterSentiment"
       :items="sentimentOptions"
       label="感情"
       clearable
       dense
+      outlined
+      hide-details
     ></v-select>
   </v-col>
 
   <!-- お気に入り -->
-  <v-col cols="6" sm="2" md="2">
+  <v-col cols="12" sm="2" md="2">
     <v-checkbox
       v-model="showFavoritesOnly"
       label="お気に入りのみ"
@@ -70,13 +89,21 @@
   </v-col>
 
   <!-- クリアボタン -->
-  <v-col cols="6" sm="2" md="2">
+  <v-col cols="12" sm="2" md="1">
     <v-btn text small color="primary" @click="clearAllFilters" dense>クリア</v-btn>
   </v-col>
 </v-row>
+</v-card>
 
+<v-row class="mb-0">
+  <v-col cols="12">
+    <p style="margin:0; font-size:0.9rem; color:#555;">
+      日記をクリックして詳細を見る
+    </p>
+  </v-col>
+</v-row>
     <!-- データテーブル -->
-    <v-row>
+    <v-row class="mt-0">
       <v-col>
         <v-data-table
           :headers="headers"
@@ -373,5 +400,6 @@ export default {
   min-height: 48px;
   vertical-align: middle;
 }
+
 </style>
 
