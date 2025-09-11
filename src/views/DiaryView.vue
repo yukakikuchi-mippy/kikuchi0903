@@ -18,7 +18,7 @@
       </v-col>
     </v-row>
 
-    <!-- ボタン群 -->
+    <!-- 投稿・下書きボタン -->
     <v-row>
       <v-col cols="6">
         <v-btn
@@ -56,6 +56,7 @@
     <v-row v-if="response" class="mt-4">
       <v-col>
         <v-card outlined class="pa-2" style="position: relative;">
+          <!-- お気に入りボタン（保存済みの時だけ表示） -->
           <FavoriteButton
             v-if="response.diary_id"
             :diaryId="response.diary_id"
@@ -91,19 +92,21 @@ import SentimentDisplay from "@/components/SentimentDisplay.vue";
 export default {
   components: { FavoriteButton, SentimentDisplay },
   props: {
+    // 編集モード用（下書きIDが渡される）
     id: { type: [String, Number], required: false } // 編集用下書きID
   },
   data() {
     return {
       localId: this.id || null,  // propsを直接編集せず内部で管理
-      message: "",
-      response: null,
-      error: null,
-      loading: false,
-      draftLoading: false,
+      message: "", // 入力した日記本文
+      response: null, // 投稿/保存後のレスポンス
+      error: null, // エラーメッセージ
+      loading: false, // 投稿中フラグ
+      draftLoading: false, // 下書き保存中フラグ
     };
   },
   computed: {
+    // 編集モードかどうか判定
     isEdit() { return !!this.localId; },
   },
   async created() {
@@ -123,6 +126,7 @@ export default {
     }
   },
   methods: {
+    // 日記を投稿する処理
     async submitDiary() {
   if (!this.message.trim()) {
     this.error = "日記を入力してください。";
@@ -133,6 +137,7 @@ export default {
   const userId = this.$store.state.userId;
 
   try {
+    // API URLを場合分け（新規/下書きからの投稿）
     const apiUrl = this.isEdit
       ? `https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/drafts/${this.localId}/publish`
       : "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/PostDiaryFunction";
@@ -166,7 +171,7 @@ export default {
     this.loading = false;
   }
 },
-
+    // 下書きを保存する処理
     async saveDraft() {
       if (!this.message.trim()) return;
       this.error = null;
@@ -198,6 +203,7 @@ export default {
       }
     },
 
+    // 下書き一覧画面へ遷移
     goToDrafts() {
       this.$router.push({ name: "DraftList" });
     },

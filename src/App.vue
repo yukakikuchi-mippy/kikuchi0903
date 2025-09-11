@@ -76,7 +76,7 @@
           <v-list-item :to="{ name: 'ChangeName' }" @click="closeDrawer">
             <v-list-item-title>名前の変更</v-list-item-title>
           </v-list-item>
-          <v-list-item :to="{ name: 'ChangePassword' }" @click="closeDrawer">
+          <!-- <v-list-item :to="{ name: 'ChangePassword' }" @click="closeDrawer">
             <v-list-item-title>パスワードの変更</v-list-item-title>
           </v-list-item>
           <v-list-item :to="{ name: 'ChangeHeaderColor' }" @click="closeDrawer">
@@ -84,7 +84,7 @@
           </v-list-item>
           <v-list-item :to="{ name: 'ChangeBackgroundColor' }" @click="closeDrawer">
             <v-list-item-title>背景色変更</v-list-item-title>
-          </v-list-item>
+          </v-list-item> -->
           <v-list-item @click="switchLightDarkMode">
             <v-list-item-title>ライト/ダークモード切替</v-list-item-title>
           </v-list-item>

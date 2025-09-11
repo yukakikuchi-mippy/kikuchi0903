@@ -6,6 +6,7 @@
       </v-col>
     </v-row>
 
+    <!-- フィルター絞り込み -->
     <v-row class="mb-4" align="center" dense wrap>
   <!-- 日付 -->
   <v-col cols="6" sm="3" md="2">
@@ -27,6 +28,7 @@
           clearable
         ></v-text-field>
       </template>
+      <!-- 日付ピッカー -->
       <v-card>
         <v-date-picker v-model="filterDate" @input="dateMenu = false"></v-date-picker>
         <v-card-actions>
@@ -159,6 +161,7 @@
                   @update="val => item.is_favorite = val"
                   @click.stop
                 />
+                 <!-- 削除ボタン -->
                 <v-tooltip bottom :open-delay="500">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -197,6 +200,7 @@ export default {
       diaries: [],
       loading: false,
       error: null,
+      // ソート設定
       sortBy: 'created_at_jst',
       sortDesc: true,
       headers: [
@@ -223,6 +227,7 @@ export default {
     };
   },
   computed: {
+    //しぼりこみした日記を返す
     filteredDiaries() {
       return this.diaries.filter(d => {
         let pass = true;
@@ -261,11 +266,13 @@ export default {
     },
   },
   watch: {
+    // 日付が選択されたらテキスト表示を更新
     filterDate(val) {
       this.filterDateText = val ? this.formatDateYMD(val) : "";
     },
   },
   methods: {
+    // APIから日記一覧を取得
     async fetchDiaries() {
       this.loading = true;
       this.error = null;
@@ -283,13 +290,13 @@ export default {
         this.loading = false;
       }
     },
-    // 作成日や日付フィルター表示用（時間なし）
+    // 作成日や日付フィルター表示用（年月日）
     formatDateYMD(dt) {
       const date = new Date(dt);
       if (isNaN(date.getTime())) return "";
       return date.toLocaleDateString("ja-JP");
     },
-    // 詳細表示用（時間あり）
+    // 詳細表示用（年月日時分）
     formatDate(dt) {
       const date = new Date(dt);
       if (isNaN(date.getTime())) return "";
@@ -301,13 +308,16 @@ export default {
         minute: "numeric",
       });
     },
+    // 本文・コメントを省略表示
     truncateText(text, maxLength) {
       if (!text) return "";
       return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
     },
+     // 詳細画面へ遷移
     goToDetail(item) {
       this.$router.push({ name: "DiaryDetail", params: { id: item.diary_id } });
     },
+    // 削除確認
     async confirmDelete(diaryId) {
       if (!confirm("本当に削除しますか？")) return;
       try {
@@ -323,6 +333,7 @@ export default {
         alert("削除に失敗しました");
       }
     },
+    // フィルターをすべてクリア
      clearAllFilters() {
     this.filterDate = null;
     this.filterDateText = "";
@@ -332,6 +343,7 @@ export default {
     }
   },
   mounted() {
+    // 初回読み込み時に一覧取得
     this.fetchDiaries();
   },
 };

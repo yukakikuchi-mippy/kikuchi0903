@@ -8,16 +8,17 @@
 
     <!-- 感情内訳 / 日記件数 -->
     <v-row>
+      <!-- 左：感情内訳グラフ -->
       <v-col cols="12" md="6">
         <SentimentStatsChart :stats="sentimentStats" />
       </v-col>
-
+      <!-- 右：日記件数グラフ -->
       <v-col cols="12" md="6">
         <DiaryCountChart :diariesCount="diaries" />
       </v-col>
     </v-row>
 
-    <!-- 感情スコア平均推移 -->
+    <!-- 感情スコア平均推移グラフ -->
     <v-row>
       <v-col cols="12">
         <SentimentTrendChart :trendData="sentimentTrend" />
@@ -51,11 +52,11 @@ export default {
   components: { SentimentStatsChart, DiaryCountChart, SentimentTrendChart },
   data() {
     return {
-      sentimentStats: { "😊": 0, "😐": 0, "😢": 0 },
-      diaries: { labels: [], counts: [] },
-      sentimentTrend: { labels: [], scores: [] },
-      loading: false,
-      error: null
+      sentimentStats: { "😊": 0, "😐": 0, "😢": 0 }, // 感情統計
+      diaries: { labels: [], counts: [] }, // 日記件数
+      sentimentTrend: { labels: [], scores: [] }, // 感情スコアの平均推移
+      loading: false, // 読み込み中フラグ
+      error: null // エラーメッセージ
     };
   },
   async mounted() {
@@ -84,6 +85,7 @@ export default {
       );
 
       const data = res3.data;
+      // 日付を "月/日" 形式に変換
       this.sentimentTrend.labels = data.labels.map(d => {
         const dt = new Date(d);
         return `${dt.getMonth() + 1}/${dt.getDate()}`;

@@ -3,8 +3,9 @@
     <v-row>
       <v-col>
         <h1>日記詳細</h1>
+        <!-- 日記データが取得できたとき -->
        <v-card v-if="diary" class="pa-4" style="position: relative;">
-  <!-- 右上のボタンラッパー -->
+  <!-- 右上にお気に入りボタン -->
   <div class="favorite-btn-wrapper">
     <FavoriteButton
       :diaryId="diary.diary_id"
@@ -14,7 +15,7 @@
   </div>
 
 
-
+   <!-- 日記詳細情報 -->
   <p><strong>作成日:</strong> {{ formatDate(diary.created_at_jst) }}</p>
   <p><strong>本文:</strong> {{ diary.text }}</p>
   <p><strong>AIコメント:</strong> {{ diary.ai_text }}</p>
@@ -22,6 +23,7 @@
 
   <v-divider class="my-2"></v-divider>
 
+   <!-- 感情スコア詳細 -->
   <h3>詳細スコア</h3>
   <ul>
     <li>😊 Positive: {{ diary.positive_score?.toFixed(3) }}</li>
@@ -29,7 +31,7 @@
     <li>😢 Negative: {{ diary.negative_score?.toFixed(3) }}</li>
   </ul>
 
-  
+  <!-- スコアを横棒グラフに -->
 <div style="margin-top: 8px; display: flex; height: 20px; width: 100%; border-radius: 10px; overflow: hidden;">
   <!-- Positive -->
   <div
@@ -85,12 +87,13 @@
     {{ (diary.negative_score * 100).toFixed(0) }}%
   </div>
 </div>
+<!-- 戻るボタン -->
 <v-card-actions class="justify-end">
     <BackButton />
   </v-card-actions>
 
 </v-card>
-
+<!-- エラー時の表示 -->
         <v-alert v-else-if="error" type="error" outlined>{{ error }}</v-alert>
       </v-col>
     </v-row>
@@ -110,15 +113,16 @@ export default {
     SentimentDisplay,
     BackButton
   },
-  props: ["id"],
+  props: ["id"], //日記ID
   data() {
     return {
-      diary: null,
-      error: null,
+      diary: null, // 取得した日記データ
+      error: null, // エラーメッセージ
 
     };
   },
   async mounted() {
+    // コンポーネントが表示されたときに日記詳細を取得
   try {
     const userId = this.$store.state.userId; // 一覧と同じくユーザーIDを付与
     const res = await axios.get(
@@ -133,6 +137,7 @@ export default {
 },
 
   methods: {
+    // 日付フォーマット（日本語形式）
     formatDate(dt) {
       const date = new Date(dt);
       return isNaN(date.getTime())
@@ -145,6 +150,7 @@ export default {
             minute: "numeric",
           });
     },
+     // 最後の要素かどうか判定してバーの角丸処理に使う
      isLast(type) {
       const active = [];
       if (this.diary?.positive_score > 0) active.push('positive');

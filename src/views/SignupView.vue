@@ -20,7 +20,7 @@
         </v-col>
       </v-row>
 
-      <!-- エラー表示ダイアログ -->
+      <!-- エラー表示 -->
       <v-dialog v-model="dialog" max-width="400">
         <v-card>
           <v-card-title class="headline">エラー</v-card-title>
@@ -32,7 +32,7 @@
         </v-card>
       </v-dialog>
 
-      <!-- 成功表示ダイアログ -->
+      <!-- 成功表示 -->
       <v-dialog v-model="successDialog" max-width="400">
         <v-card>
           <v-card-title class="headline">成功</v-card-title>
@@ -54,16 +54,17 @@ export default {
   name: "SignupView",
   data() {
     return {
-      userid: "",
-      password: "",
-      displayName: "",
-      message: "",
-      errorMessage: "",
-      dialog: false,
-      successDialog: false
+      userid: "",        // 入力されたユーザーID
+      password: "",      // 入力されたパスワード
+      displayName: "",   // 入力された表示名
+      message: "",       // 成功時のメッセージ
+      errorMessage: "",  // エラーメッセージ
+      dialog: false,     // エラーダイアログ表示フラグ
+      successDialog: false // 成功ダイアログ表示フラグ
     };
   },
   methods: {
+    // ユーザー登録処理
     async signup() {
       if (!this.userid || !this.password || !this.displayName) {
         this.errorMessage = "全ての項目を入力してください。";
@@ -72,6 +73,7 @@ export default {
       }
 
       try {
+        // APIにリクエスト送信
         const response = await axios.post(
           "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/INSERTUSER?",
           {
@@ -83,14 +85,15 @@ export default {
 
         // 成功メッセージ
         this.message = response.data;
-        this.successDialog = true;
+        this.successDialog = true; // 成功ダイアログを表示
         this.errorMessage = "";
       } catch (err) {
+        // エラー処理
         this.errorMessage = "登録エラー：" + (err.response?.data || err.message);
         this.dialog = true;
       }
     },
-
+    // ログイン画面に戻る
     goToLogin() {
       this.$router.push("/");
     }

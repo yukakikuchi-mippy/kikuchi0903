@@ -31,12 +31,12 @@
           <!-- ログインボタン -->
           <v-btn color="primary" class="mt-4" block @click="login">ログイン</v-btn>
 
-          <!-- サインアップボタン -->
+          <!-- 新規登録ボタン -->
           <v-btn text class="mt-2" block @click="goToSignup">新規登録はこちら</v-btn>
         </v-col>
       </v-row>
 
-      <!-- エラーダイアログ -->
+      <!-- エラー表示-->
       <v-dialog v-model="dialog" max-width="400">
         <v-card>
           <v-card-title class="headline">エラー</v-card-title>
@@ -58,19 +58,21 @@ export default {
   name: "LoginView",
   data() {
     return {
-      userid: "",
-      password: "",
-      errorMessage: "",
-      dialog: false
+      userid: "", // 入力中のユーザーID
+      password: "", // 入力中のパスワード
+      errorMessage: "", // エラーメッセージ
+      dialog: false // エラーダイアログ表示フラグ
     };
   },
   mounted() {
-    // ページに入るたびに必ずフォーム初期化
+    // ページに入るたびにフォーム初期化
     this.userid = "";
     this.password = "";
   },
   methods: {
+    // ログイン処理
     async login() {
+      // 入力チェック
       if (!this.userid || !this.password) {
         this.errorMessage = "ユーザーIDとパスワードを入力してください。";
         this.dialog = true;
@@ -78,6 +80,7 @@ export default {
       }
 
       try {
+        // 認証API呼び出し
         const response = await axios.post(
           "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/LOGIN?",
           {
@@ -86,7 +89,9 @@ export default {
           }
         );
 
+        // 認証成功した場合
         if (response.status === 200 && response.data?.result === "Succeeded") {
+          // サーバー側でセッションを作成
           const sessionResponse = await axios.post(
             "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/CreateSession?",
             {
@@ -96,7 +101,7 @@ export default {
           );
 
           if (sessionResponse.status === 200) {
-            // ✅ Vuexにセッション保存
+            // Vuexにセッション保存
             this.$store.commit("setSession", {
               sessionId: sessionResponse.data.sessionId,
               userId: this.userid,
@@ -109,27 +114,30 @@ export default {
             // localStorage にも保存
             localStorage.setItem("session", JSON.stringify(this.$store.state));
 
-            // ✅ Cookieにも保存（サーバー確認用）
+            // Cookieにも保存（サーバー確認用）
             document.cookie = `session_id=${encodeURIComponent(
               sessionResponse.data.sessionId
             )}; path=/; secure; samesite=strict`;
 
-            // ✅ 日記ページに遷移
+            // 日記ページに遷移
             this.$router.replace("/diary");
           } else {
             this.errorMessage = "セッションの生成に失敗しました。";
             this.dialog = true;
           }
         } else {
+           // 認証失敗時
           this.errorMessage = "ユーザーIDまたはパスワードが正しくありません。";
           this.dialog = true;
         }
       } catch (err) {
+        // ネットワークエラーやAPIエラー時
         console.error("ログインエラー:", err);
         this.errorMessage = "ユーザーIDまたはパスワードが正しくありません。";
         this.dialog = true;
       }
     },
+    // 新規登録画面へ遷移
     goToSignup() {
       this.$router.push("/signup");
     }

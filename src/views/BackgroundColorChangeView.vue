@@ -2,7 +2,7 @@
   
     <v-container fluid class="d-flex flex-column" style="height: 100vh; padding: 16px; overflow-x: hidden;">
       
-      <!-- スクロール可能部分: タイトル + 色選択 -->
+      <!-- スクロール可能部分(タイトルと色選択）-->
       <div 
         style="max-height: 65vh; overflow-y: auto; overflow-x: hidden; padding-bottom: 16px;"
       >
@@ -14,7 +14,9 @@
           <v-col cols="12" sm="10" md="8" class="text-center">
             <div class="mb-4">色を選択してください</div>
 
+             <!-- パレットをベース色ごとにループ -->
             <div v-for="(shades, base) in colorPalette" :key="base" class="mb-4 d-flex flex-wrap justify-center">
+              <!-- 各色のボタン -->
               <v-btn
                 v-for="(shade, index) in shades"
                 :key="index"
@@ -25,6 +27,7 @@
                 small
                 @click="selectedColor = shade"
               >
+                <!-- 選択中の色のときチェックマーク -->
                 <v-icon v-if="selectedColor === shade" color="white">mdi-check</v-icon>
               </v-btn>
             </div>
@@ -53,6 +56,7 @@ export default {
   name: "BackgroundColorChangeView",
   data() {
     return {
+      // カラーパレット
        colorPalette: {
       red: ["#FFEBEE", "#FFCDD2", "#EF9A9A"],
       pink: ["#FCE4EC", "#F8BBD0", "#F48FB1"],
@@ -77,19 +81,21 @@ export default {
 
      
       selectedColor: "#ffffff", // デフォルトは白
-      message: "",
+      message: "", // 成功メッセージ
       errorMessage: "",
-      successDialog: false,
+      successDialog: false, // 成功ダイアログ表示フラグ
       errorDialog: false,
     };
   },
   mounted() {
+    // Vuexから今の背景色を取得して選択状態に反映
     const currentColor = this.$store.getters.currentUser.backgroundColor;
     if (currentColor) {
       this.selectedColor = currentColor;
     }
   },
   methods: {
+    // 背景色を変更
     async changeBackgroundColor() {
       if (!this.selectedColor) {
         this.errorMessage = "色を選択してください。";
@@ -101,6 +107,7 @@ export default {
         const userId = this.$store.getters.currentUser.id;
         if (!userId) throw new Error("ユーザー情報が取得できません");
 
+        // APIに背景色変更をリクエスト
         const response = await axios.post(
           "https://m3h-kkikuchi-0820functionapi.azurewebsites.net/api/UPDATEBACKGROUNDCOLOR",
           {
@@ -108,11 +115,11 @@ export default {
             BackgroundColor: this.selectedColor,
           }
         );
-
+        // 成功時
         if (response.data?.result === "Succeeded") {
           this.message = "背景の色を変更しました。";
 
-          // Vuex にも HEX を保存
+          // Vuexセッション更新（背景色を保存）
           this.$store.commit("setSession", {
             sessionId: this.$store.state.sessionId,
             userId,
@@ -124,16 +131,18 @@ export default {
 
           this.successDialog = true;
           this.errorMessage = "";
+          // 失敗時
         } else {
           this.errorMessage = response.data?.message || "色変更に失敗しました。";
           this.errorDialog = true;
         }
       } catch (err) {
+        // エラー処理
         this.errorMessage = "色変更エラー：" + (err.response?.data || err.message);
         this.errorDialog = true;
       }
     },
-
+    // 戻るボタン処理
     goBack() {
       if (window.history.length > 1) {
         this.$router.back();

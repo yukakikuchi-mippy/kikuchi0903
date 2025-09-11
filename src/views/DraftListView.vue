@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
 
-    <!-- データテーブル -->
+    <!-- 下書き一覧が1件以上あるとき表示 -->
     <v-row v-if="drafts.length > 0">
       <v-col>
         <v-data-table
@@ -19,7 +19,9 @@
         >
           <template v-slot:item="{ item }">
             <tr>
+              <!-- 作成日 -->
               <td>{{ formatDate(item.created_at_jst) }}</td>
+              <!-- 本文（長すぎる場合は省略） -->
               <td>{{ truncateText(item.text, 30) }}</td>
               <td>
                 <!-- 編集ボタン -->
@@ -60,7 +62,7 @@
       </v-col>
     </v-row>
 
-    <!-- 0件メッセージ -->
+    <!-- 下書きないとき -->
     <v-row v-else-if="!loading">
       <v-col>
         <v-alert type="info" dense outlined>
@@ -96,11 +98,11 @@ export default {
   components: { BackButton },
   data() {
     return {
-      drafts: [],
-      loading: false,
-      sortBy: "created_at_jst",
-      sortDesc: true,
-      error: null,
+      drafts: [], // 下書き一覧データ
+      loading: false, // 読み込み中フラグ
+      sortBy: "created_at_jst", // ソート
+      sortDesc: true, // 降順
+      error: null, // エラーメッセージ
       headers: [
         { text: "作成日", value: "created_at_jst" },
         { text: "日記本文", value: "text" },
@@ -109,6 +111,7 @@ export default {
     };
   },
   methods: {
+    // 下書き一覧をAPIから取得
     async fetchDrafts() {
       this.loading = true;
       this.error = null;
@@ -138,6 +141,7 @@ export default {
         this.loading = false;
       }
     },
+    // 日付表示（年月日時分）
     formatDate(dt) {
       const date = new Date(dt);
       if (isNaN(date.getTime())) return "";
@@ -147,14 +151,18 @@ export default {
         date.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })
       );
     },
+    // 本文が長いときに省略
     truncateText(text, maxLength) {
       if (!text) return "";
       return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
     },
+    // 編集画面へ遷移
     editDraft(item) {
-      // DraftEdit ルートに統一
+      // DraftEditルートへ（idを渡す）
       this.$router.push({ name: "DraftEdit", params: { id: item.diary_id } });
     },
+
+    // 下書きを削除
     async deleteDraft(diaryId) {
       if (!confirm("本当に削除しますか？")) return;
       try {
@@ -172,6 +180,7 @@ export default {
     },
   },
   mounted() {
+    // 初回読み込み時に一覧取得
     this.fetchDrafts();
   },
 };
