@@ -24,7 +24,7 @@
             <v-list-item :to="{ name: 'ChangeName' }">
               <v-list-item-title>名前の変更</v-list-item-title>
             </v-list-item>
-            <v-list-item :to="{ name: 'ChangePassword' }">
+            <!-- <v-list-item :to="{ name: 'ChangePassword' }">
               <v-list-item-title>パスワードの変更</v-list-item-title>
             </v-list-item>
             <v-list-item :to="{ name: 'ChangeHeaderColor' }">
@@ -32,7 +32,7 @@
             </v-list-item>
             <v-list-item :to="{ name: 'ChangeBackgroundColor' }">
               <v-list-item-title>背景色変更</v-list-item-title>
-            </v-list-item>
+            </v-list-item> -->
             <v-list-item @click="switchLightDarkMode">
               <v-list-item-title>ライト/ダークモード切替</v-list-item-title>
             </v-list-item>

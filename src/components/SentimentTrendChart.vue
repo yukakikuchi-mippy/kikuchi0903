@@ -2,11 +2,13 @@
   <v-card outlined class="pa-4">
     <v-card-title>感情スコア平均（直近2週間）</v-card-title>
     <v-card-text>
+       <!-- データがある場合のみグラフ表示 -->
       <v-chart
         v-if="trendData.labels.length"
         :options="chartOptions"
         style="height: 300px; width: 100%;"
       />
+      <!-- データがない場合の表示 -->
       <div v-else>データがありません</div>
     </v-card-text>
   </v-card>
@@ -14,14 +16,16 @@
 
 <script>
 import VChart from "vue-echarts";
-import "echarts/lib/chart/line";
-import "echarts/lib/component/tooltip";
-import "echarts/lib/component/grid";
+import "echarts/lib/chart/line"; // 折れ線グラフ
+import "echarts/lib/component/tooltip"; // ツールチップ
+import "echarts/lib/component/grid"; // 補助線
+
 
 export default {
   name: "SentimentTrendChart",
   components: { VChart },
   props: {
+    // 親コンポーネントから渡される直近2週間のラベルとスコア
     trendData: {
       type: Object,
       required: true,
@@ -30,14 +34,15 @@ export default {
   },
   computed: {
     chartOptions() {
-      // ダークモード判定
+      // ダークモード
       const isDark = this.$vuetify.theme.dark;
       const textColor = isDark ? "#ffffff" : "#000000";
       const splitLineColor = isDark ? "#444444" : "#cccccc";
 
       return {
+        // ツールチップ
         tooltip: { 
-          trigger: "axis", 
+          trigger: "axis", // 横軸に沿って表示
           textStyle: { color: textColor } 
         },
         xAxis: {
@@ -47,6 +52,7 @@ export default {
           axisLine: { lineStyle: { color: textColor } },
           splitLine: { lineStyle: { color: splitLineColor } }
         },
+        // 縦軸（感情スコア -1～1）
         yAxis: {
           type: "value",
           min: -1,
@@ -57,12 +63,12 @@ export default {
         },
         series: [
           {
-            type: "line",
+            type: "line", // 折れ線グラフ
             data: this.trendData.scores,
-            smooth: true,
-            connectNulls: true,
-            lineStyle: { color: "#ff5722" },
-            itemStyle: { color: "#ff5722" }
+            smooth: true, // 線を滑らかに
+            connectNulls: true, // nullを線で接続
+            lineStyle: { color: "#ff5722" }, // 線の色
+            itemStyle: { color: "#ff5722" } // データポイントの色
           }
         ]
       };

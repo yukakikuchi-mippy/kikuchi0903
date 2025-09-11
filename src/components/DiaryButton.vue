@@ -7,8 +7,5 @@
 <script>
 export default {
   name: "DiaryButton",
-  props: {
-    small: { type: Boolean, default: false }
-  }
 };
 </script>

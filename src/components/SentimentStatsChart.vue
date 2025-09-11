@@ -11,6 +11,7 @@
 export default {
   name: "SentimentStatsChart",
   props: {
+    // 親コンポーネントから渡す感情カウントデータ
     stats: {
       type: Object,
       required: true,
@@ -18,6 +19,7 @@ export default {
     }
   },
   computed: {
+    // グラフの設定
     chartOptions() {
       const isDark = this.$vuetify.theme.dark;
       const textColor = isDark ? "#ffffff" : "#000000";
@@ -25,13 +27,15 @@ export default {
 
       return {
         tooltip: { textStyle: { color: textColor } },
+        // 横軸
         xAxis: {
           type: "category",
-          data: ["😊", "😐", "😢"],
-          axisLabel: { fontSize: 20, color: textColor },
-          axisLine: { lineStyle: { color: textColor } },
-          splitLine: { lineStyle: { color: splitLineColor } }
+          data: ["😊", "😐", "😢"], // ラベル
+          axisLabel: { fontSize: 20, color: textColor }, //軸の文字
+          axisLine: { lineStyle: { color: textColor } }, // 軸の線の色
+          splitLine: { lineStyle: { color: splitLineColor } } // 補助線
         },
+        // 縦軸
         yAxis: {
           type: "value",
           axisLabel: { fontSize: 16, color: textColor },
@@ -40,14 +44,14 @@ export default {
         },
         series: [
           {
-            type: "bar",
-            data: [
+            type: "bar", // 棒グラフ
+            data: [ 
               this.stats["😊"] || 0,
               this.stats["😐"] || 0,
               this.stats["😢"] || 0
             ],
-            itemStyle: { color: "#009b9f" },
-            barWidth: 40
+            itemStyle: { color: "#009b9f" }, // 色
+            barWidth: 40 // 棒の太さ
           }
         ]
       };

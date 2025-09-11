@@ -5,10 +5,8 @@
 </template>
 
 <script>
+// 日記投稿ボタンとおんなじような感じ
 export default {
   name: "DiarylistButton",
-  props: {
-    small: { type: Boolean, default: false }
-  },
 };
 </script>

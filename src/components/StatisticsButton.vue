@@ -5,6 +5,7 @@
 </template>
 
 <script>
+// 日記投稿ボタンとおんなじような感じ
 export default {
   name: "StatisticsButton",
 };

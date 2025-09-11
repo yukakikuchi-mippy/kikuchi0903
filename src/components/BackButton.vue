@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "BackButton",
+  name: "BackButton", // コンポーネント名
   props: {
     to: {
       type: [String, Object],
@@ -14,8 +14,10 @@ export default {
     }
   },
   methods: {
+    // ボタンがクリックされたときの処理
     goBack() {
       if (this.to) {
+        // to が指定されていれば、そのルートに遷移
         this.$router.push(this.to);
       } else {
         this.$router.back(); // 前の画面に戻る
