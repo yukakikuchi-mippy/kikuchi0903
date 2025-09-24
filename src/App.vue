@@ -216,4 +216,6 @@ export default {
   .responsive-btn { font-size: 10px; padding: 2px 4px; }
   .responsive-icon { font-size: 18px; }
 }
+
+
 </style>
